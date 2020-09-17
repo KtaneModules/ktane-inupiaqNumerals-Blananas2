@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: inupiaqNumerals
+  title: "I\xF1upiaq Numerals"
+  author: 
+  description: "If you\u2019re complaining about the fact that this has an \xF1 in
+    it\u2019s name, just be glad it\u2019s not an \u014B, nobody knows how to pronounce
+    that.\n\r\nModule ID: inupiaqNumerals\nThe manual can be found here: https://ktane.timwi.de/HTML/I\xF1upiaq%20Numerals.html"
+  version: 
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: 2f299a7cfd789af418bdac460074639a, type: 3}
