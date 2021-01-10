@@ -142,4 +142,56 @@ public class inupiaqNumeralScript : MonoBehaviour {
             GetComponent<KMBombModule>().HandleStrike();
         }
     }
+	
+	//twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} press [ll/lr/rl/rr] [1-20] presses the given button by the given number (Example: !{0} lr 15. The command presses the bottom right button on the left-most digit 15 times) (Note: The command always presses the bottom portion of the buttons) | !{0} submit submits the answer";
+    #pragma warning restore 414
+	
+	string[] ValidPress = {"ll", "lr", "rl", "rr"};
+	
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+		string[] parameters = command.Split(' ');
+		if (Regex.IsMatch(command, @"^\s*submit\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+			yield return null;
+			Submit.OnInteract();
+		}
+		
+		if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+			yield return null;
+			if (parameters.Length != 3)
+			{
+				yield return "sendtochaterror Invalid parameter length. The command was not processed.";
+				yield break;
+			}
+			
+			if (new[] {parameters[1].ToLowerInvariant()}.Any(c => !ValidPress.Contains(c)))
+			{
+				yield return "sendtochaterror Button press in not valid. The command was not processed.";
+				yield break;
+			}
+			
+			int Out;
+			if (!Int32.TryParse(parameters[2], out Out))
+			{
+				yield return "sendtochaterror Invalid number was sent. The command was not processed.";
+				yield break;
+			}
+			
+			if (Out < 1 || Out > 20)
+			{
+				yield return "sendtochaterror Number was not between 1-20. The command was not processed.";
+				yield break;
+			}
+
+			for (int x = 0; x < Out; x++)
+			{
+				DigitModifiers[4 + Array.IndexOf(ValidPress, parameters[1].ToLowerInvariant())].OnInteract();
+				yield return new WaitForSecondsRealtime(0.1f);
+			}
+		}
+	}
 }
