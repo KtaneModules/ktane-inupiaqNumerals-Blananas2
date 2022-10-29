@@ -93,13 +93,14 @@ GameObject:
   - component: {fileID: 4387706578289126}
   - component: {fileID: 23510302942202748}
   - component: {fileID: 102915749281844938}
+  - component: {fileID: 114014060087614078}
   m_Layer: 0
   m_Name: Sign but again
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1171375922027510
 GameObject:
   m_ObjectHideFlags: 1
@@ -499,7 +500,7 @@ GameObject:
   - component: {fileID: 114139553842080666}
   - component: {fileID: 114788277636338706}
   m_Layer: 0
-  m_Name: Template
+  m_Name: Inupiaq Numerals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -858,7 +859,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1110216257582538}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0535, y: 0.0101, z: -0.0109}
+  m_LocalPosition: {x: -0.0535, y: 0.0101, z: 0.0033}
   m_LocalScale: {x: 0.0034999999, y: 0.0035000017, z: 0.0100000035}
   m_Children: []
   m_Father: {fileID: 4257340207950476}
@@ -2090,7 +2091,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1685659743268684}
-  m_Text: +
+  m_Text: '-'
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
@@ -2174,12 +2175,14 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1110216257582538}
-  m_Text: '-'
+  m_Text: '.
+
+    .'
   m_OffsetZ: 0
   m_CharacterSize: 1
-  m_LineSpacing: 1
+  m_LineSpacing: 0.3
   m_Anchor: 4
-  m_Alignment: 2
+  m_Alignment: 1
   m_TabSize: 4
   m_FontSize: 144
   m_FontStyle: 0
@@ -2201,6 +2204,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/DiffuseTint
+--- !u!114 &114014060087614078
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1110216257582538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - GUI/KT 3D Text
 --- !u!114 &114017494597579446
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2341,16 +2357,19 @@ MonoBehaviour:
   Parent: {fileID: 0}
   Children:
   - {fileID: 114546874468206376}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 114087557197524496}
   - {fileID: 114799925199970220}
-  - {fileID: 114330654268364850}
-  - {fileID: 114978227506124026}
   - {fileID: 114330067758314564}
   - {fileID: 114461492529848448}
+  - {fileID: 114330654268364850}
+  - {fileID: 114978227506124026}
   - {fileID: 114941870548586884}
   - {fileID: 114901824977931154}
   IsPassThrough: 0
-  ChildRowLength: 0
+  ChildRowLength: 4
   Highlight: {fileID: 114570430299588062}
   SelectableColliders: []
   DefaultSelectableIndex: 0

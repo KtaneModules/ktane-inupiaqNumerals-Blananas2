@@ -25,15 +25,31 @@ public class inupiaqNumeralScript : MonoBehaviour {
 
     string numerals = ""; //used by the font
     string NforLog = "0123456789ABCDEFGHIJ";
-    private List<string> operations = new List<string> { "+", "-", "×", ":" };
+    private List<string> operations = new List<string> { "+", "-", "×", " " };
     int stages = 0;
     int numA = 0; int numB = 0; int numC = 0;
     int answer = 0;
     bool thisAintGood = false;
     string textOnModule = "";
 
+    private InupiaqNumeralsSettings Settings = new InupiaqNumeralsSettings();
+    int numberOfStages = 4;
+
     void Awake () {
         moduleId = moduleIdCounter++;
+
+        ModConfig<InupiaqNumeralsSettings> modConfig = new ModConfig<InupiaqNumeralsSettings>("InupiaqNumeralsSettings");
+        //Read from the settings file, or create one if one doesn't exist
+        Settings = modConfig.Settings;
+        //Update the settings file incase there was an error during read
+        modConfig.Settings = Settings;
+
+        numberOfStages = Settings.TotalStages;
+        if (numberOfStages <= 0) {
+            Debug.LogFormat("<Iñupiaq Numerals #{0}> Do not make the number of stages less than 1.", moduleId);
+            numberOfStages = 4;
+        }
+        Debug.LogFormat("<Iñupiaq Numerals #{0}> Number of stages: {1}", moduleId, numberOfStages);
 
         foreach (KMSelectable button in DigitModifiers) {
             button.OnInteract += delegate () { buttonPress(button); return false; };
@@ -54,19 +70,20 @@ public class inupiaqNumeralScript : MonoBehaviour {
     }
 
     void GenerateStage() {
-        if (operations[stages] == ":") {
+        if (operations[stages%4] == " ") {
             Oper2.gameObject.SetActive(true);
+			Oper1.text = "-";
         } else {
             Oper2.gameObject.SetActive(false);
+			Oper1.text = operations[stages%4];
         }
-        Oper1.text = operations[stages];
 
         TryAgain:
         thisAintGood = false;
         numA = UnityEngine.Random.Range(0, 400);
         numB = UnityEngine.Random.Range(0, 400);
 
-        switch (operations[stages]) {
+        switch (operations[stages%4]) {
             case "+":
                 numC = numA + numB;
                 if (numC > 399) {
@@ -85,7 +102,7 @@ public class inupiaqNumeralScript : MonoBehaviour {
                     thisAintGood = true;
                 }
             break;
-            case ":":
+            case " ":
                 if (numB == 0 || numA % numB != 0) {
                     thisAintGood = true;
                 } else {
@@ -99,7 +116,7 @@ public class inupiaqNumeralScript : MonoBehaviour {
             goto TryAgain;
         } else {
             textOnModule = String.Format("{0}{1}\n{2}{3}\n$&", numerals[numA/20], numerals[numA%20], numerals[numB/20], numerals[numB%20]);
-            Debug.LogFormat("[Iñupiaq Numerals #{0}] Stage {1}: {2}{3} {4} {5}{6} = {7}{8}", moduleId, stages+1, NforLog[numA/20], NforLog[numA%20], operations[stages].Replace(":", "÷"), NforLog[numB/20], NforLog[numB%20], NforLog[numC/20], NforLog[numC%20]);
+            Debug.LogFormat("[Iñupiaq Numerals #{0}] Stage {1}: {2}{3} {4} {5}{6} = {7}{8}", moduleId, stages+1, NforLog[numA/20], NforLog[numA%20], operations[stages%4].Replace(" ", "÷"), NforLog[numB/20], NforLog[numB%20], NforLog[numC/20], NforLog[numC%20]);
         }
     }
 
@@ -127,10 +144,20 @@ public class inupiaqNumeralScript : MonoBehaviour {
         GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
         if (answer == numC) {
             Debug.LogFormat("[Iñupiaq Numerals #{0}] {1}{2} submitted for Stage {3}, that is correct.", moduleId, NforLog[answer/20], NforLog[answer%20], stages+1);
-            LEDs[stages].GetComponent<MeshRenderer>().material = Lit;
             stages++;
-            if (stages == 4) {
-                Debug.LogFormat("[Iñupiaq Numerals #{0}] All 4 stages finished, module solved.", moduleId);
+            float percentage = (float)stages / (float)numberOfStages;
+                if (percentage >= 0.25f) {
+                    LEDs[0].GetComponent<MeshRenderer>().material = Lit;
+                }
+                if (percentage >= 0.5f) {
+                    LEDs[1].GetComponent<MeshRenderer>().material = Lit;
+                }
+                if (percentage >= 0.75f) {
+                    LEDs[2].GetComponent<MeshRenderer>().material = Lit;
+                }
+            if (stages == numberOfStages) {
+                LEDs[3].GetComponent<MeshRenderer>().material = Lit;
+                Debug.LogFormat("[Iñupiaq Numerals #{0}] All {1} stages finished, module solved.", moduleId, numberOfStages);
                 GetComponent<KMBombModule>().HandlePass();
                 moduleSolved = true;
             } else {
@@ -145,10 +172,10 @@ public class inupiaqNumeralScript : MonoBehaviour {
 	
 	//twitch plays
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} press [ll/lr/rl/rr] [1-20] presses the given button by the given number (Example: !{0} lr 15. The command presses the bottom right button on the left-most digit 15 times) (Note: The command always presses the bottom portion of the buttons) | !{0} submit submits the answer";
+    private readonly string TwitchHelpMessage = @"!{0} press [tll/trl/tlr/trr/bll/brl/blr/brr] [1-20] presses the given button by the given number (Example: !{0} press tlr 15. The command presses the top-left button on the right-most digit 15 times) (Note: The command always presses the bottom portion of the buttons) | !{0} submit submits the answer";
     #pragma warning restore 414
 	
-	string[] ValidPress = {"ll", "lr", "rl", "rr"};
+	string[] ValidPress = {"tll", "trl", "tlr", "trr", "bll", "brl", "blr", "brr"};
 	
     IEnumerator ProcessTwitchCommand(string command)
     {
@@ -189,9 +216,30 @@ public class inupiaqNumeralScript : MonoBehaviour {
 
 			for (int x = 0; x < Out; x++)
 			{
-				DigitModifiers[4 + Array.IndexOf(ValidPress, parameters[1].ToLowerInvariant())].OnInteract();
+				DigitModifiers[Array.IndexOf(ValidPress, parameters[1].ToLowerInvariant())].OnInteract();
 				yield return new WaitForSecondsRealtime(0.1f);
 			}
 		}
 	}
+
+    class InupiaqNumeralsSettings
+    {
+        public int TotalStages = 4;
+    }
+
+    static Dictionary<string, object>[] TweaksEditorSettings = new Dictionary<string, object>[]
+    {
+        new Dictionary<string, object>
+        {
+            { "Filename", "InupiaqNumerals.json" },
+            { "Name", "Iñupiaq Numerals Settings" },
+            { "Listing", new List<Dictionary<string, object>>{
+                new Dictionary<string, object>
+                {
+                    { "Key", "TotalStages" },
+                    { "Text", "Amount of stages the module will have." }
+                }
+            } }
+        }
+    };
 }
