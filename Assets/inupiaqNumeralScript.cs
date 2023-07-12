@@ -172,7 +172,7 @@ public class inupiaqNumeralScript : MonoBehaviour {
 	
 	//twitch plays
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} press [tll/trl/tlr/trr/bll/brl/blr/brr] [1-20] presses the given button by the given number (Example: !{0} press tlr 15. The command presses the top-left button on the right-most digit 15 times) (Note: The command always presses the bottom portion of the buttons) | !{0} submit submits the answer";
+    private readonly string TwitchHelpMessage = @"!{0} press [tll/trl/tlr/trr/bll/brl/blr/brr] [1-20] presses the given button by the given number (Example: !{0} press tlr 15. The command presses the top-left button on the right-most digit 15 times) | !{0} submit submits the answer";
     #pragma warning restore 414
 	
 	string[] ValidPress = {"tll", "trl", "tlr", "trr", "bll", "brl", "blr", "brr"};
